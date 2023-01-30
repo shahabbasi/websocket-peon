@@ -1,0 +1,22 @@
+{
+  "name": "websocket-peon",
+  "version": "0.0.1",
+  "description": "An applicable layer to your HTTP API which helps you turn it into a WebSocket endpoint",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shahabbasi/websocket-peon.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shahabbasi/websocket-peon/issues"
+  },
+  "homepage": "https://github.com/shahabbasi/websocket-peon#readme",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
