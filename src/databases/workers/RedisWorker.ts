@@ -3,18 +3,18 @@ import BaseWorker from './BaseWorker';
 
 
 export default class RedisWorker extends BaseWorker {
-  private readonly prefix: string;
+  private readonly _prefix: string;
   constructor (
     connection: ConnectionType, prefix: string
   ) {
     super(connection);
-    this.prefix = prefix;
+    this._prefix = prefix;
   }
 
   private _createKeyWithIdentity (
     identity: string
   ): string {
-    return `${this.prefix}:id:${identity}`;
+    return `${this._prefix}:id:${identity}`;
   }
 
   private _createKeysWithIdentities (

@@ -2,10 +2,10 @@ import Redis from 'ioredis';
 import type { ConnectionType } from '../connections/index';
 
 export default abstract class BaseWorker {
-  protected readonly db: Redis;
+  protected readonly _db: Redis;
 
   constructor (connection: ConnectionType) {
-    this.db = connection;
+    this._db = connection;
   }
 
   public abstract getUserConnection (
