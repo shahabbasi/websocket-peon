@@ -32,19 +32,19 @@ export default class RedisWorker extends BaseWorker {
   public getUserConnection (
     identity: string
   ): Promise<string> {
-    return this.db.get(this._createKeyWithIdentity(identity));
+    return this._db.get(this._createKeyWithIdentity(identity));
   }
 
   public getUserConnections (
     identities: Array<string>
   ): Promise<Array<string>> {
-    return this.db.mget(this._createKeysWithIdentities(identities));
+    return this._db.mget(this._createKeysWithIdentities(identities));
   }
 
   public setUserConnection (
     identity: string, connectionId: string
   ): Promise<string> {
-    return this.db.set(this._createKeyWithIdentity(identity), connectionId);
+    return this._db.set(this._createKeyWithIdentity(identity), connectionId);
   }
 
   public setUserConnections (
@@ -62,6 +62,6 @@ export default class RedisWorker extends BaseWorker {
       items.push(obj);
     }
 
-    return this.db.mset(items);
+    return this._db.mset(items);
   }
 }

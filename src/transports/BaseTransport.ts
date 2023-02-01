@@ -11,12 +11,12 @@ export declare type MessageType = {
 
 export default abstract class BaseTransport {
   protected readonly _db: BaseWorker;
-  protected _connections: {[key: string]: unknown};
+  protected _connections: Map<string, unknown>;
   protected readonly _targetTransport: BaseTargetTransport;
 
   constructor (db: BaseWorker, targetTransport: BaseTargetTransport) {
     this._db = db;
-    this._connections = {};
+    this._connections = new Map();
     this._targetTransport = targetTransport;
   }
 
