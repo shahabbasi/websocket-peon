@@ -1,7 +1,9 @@
 import Redis from 'ioredis';
 
 
-const redis: Redis = new Redis(process.env.REDIS_URL);
+let redis: Redis | null = null;
 
-
-export default redis;
+export default function (url: string): Redis {
+  if (!redis) redis = new Redis(url);
+  return redis;
+}

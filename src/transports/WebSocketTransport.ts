@@ -14,6 +14,7 @@ export default abstract class WebSocketTransport extends BaseTransport {
     super(db, targetTransport);
     this._setupConnectivityChecker();
   }
+
   public initConnection (connection: WebSocket): string {
     const id = uuid();
     this._connections.set(id, connection);
