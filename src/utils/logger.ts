@@ -11,7 +11,7 @@ const { timestamp, printf } = format;
 
 const sentryOptions = {
   config: {
-    dsn: process.env.SENTRY_DNS,
+    dsn: process.env.SENTRY_DSN,
   },
   level: 'error',
 };
