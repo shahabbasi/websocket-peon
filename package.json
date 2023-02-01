@@ -2,10 +2,10 @@
   "name": "websocket-peon",
   "version": "0.0.1",
   "description": "An applicable layer to your HTTP API which helps you turn it into a WebSocket endpoint",
-  "main": "src/index.js",
+  "main": "src/socket-server.ts",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "server:dev": "npx nodemon --config server.nodemon.json"
+    "server:dev": "npx nodemon --config sserver.nodemon.json"
   },
   "repository": {
     "type": "git",

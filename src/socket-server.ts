@@ -9,7 +9,7 @@ import HTTPTransport from './target-transports/HTTPTransport';
 
 
 async function init(): Promise<void> {
-  const dbType: string = process.env.DB_TYPE;
+  const dbType: string = process.env.DATABASE_TYPE;
 
   const worker: BaseWorker = WorkerFactory.getWorker(
     dbType,
@@ -29,8 +29,9 @@ async function init(): Promise<void> {
     targetTransport,
   );
 
+  const port = parseInt(process.env.PORT || '3001');
   const server = new WebSocketServer({
-    port: parseInt(process.env.PORT || '3001'),
+    port: port,
   });
 
   server.on('connection', function connection(ws: WebSocket) {
@@ -38,6 +39,7 @@ async function init(): Promise<void> {
 
     ws.on('message', function message(data) {
       // TODO: Process user message!
+      ws.send('HI!');
     });
 
     ws.on('pong', function () {
@@ -61,6 +63,9 @@ async function init(): Promise<void> {
     // TODO: Shutdown server!
   });
 
+  server.once('listening', () => {
+    console.log(`Server started listening on port: ${port}`);
+  });
 }
 
 (async () => {

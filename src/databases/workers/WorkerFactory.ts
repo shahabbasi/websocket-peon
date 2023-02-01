@@ -8,12 +8,7 @@ export declare type DatabaseConfigs = {
   dbPrefix: string
 }
 
-export enum DatabaseType {
-  REDIS = 'redis',
-  POSTGRES = 'postgres',
-  MONGODB = 'mongodb',
-  MYSQL = 'mysql'
-}
+export type DatabaseType = 'redis' | 'postgres' | 'mongodb' | 'mysql'
 
 export default class WorkerFactory {
   private static _getRedisWorker (config: DatabaseConfigs): RedisWorker {
@@ -26,11 +21,10 @@ export default class WorkerFactory {
   public static getWorker (
     dbType: string, config: DatabaseConfigs
   ): BaseWorker {
-    if (!(dbType in DatabaseType)) {
-      throw new Error('Invalid database type');
-    }
-    if (dbType === DatabaseType.REDIS) {
+    if (dbType === 'redis') {
       return this._getRedisWorker(config);
     }
+
+    throw new Error('Invalid database type');
   }
 }
