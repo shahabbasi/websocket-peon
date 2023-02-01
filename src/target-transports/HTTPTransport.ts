@@ -1,12 +1,9 @@
 import axios from 'axios';
 import { MessageType } from '../transports/BaseTransport';
-import type { ResponseType } from './BaseTransport';
+import BaseTransport, { ResponseType } from './BaseTransport';
 
 
-export default abstract class BaseTransport {
-  private readonly _host: string;
-  private readonly _port: string;
-
+export default class HTTPTransport extends BaseTransport {
   public sendRequest (message: MessageType): Promise<ResponseType> {
     return axios({
       method: message.method,

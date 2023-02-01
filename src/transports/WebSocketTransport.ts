@@ -5,7 +5,7 @@ import BaseTargetTransport, { ResponseType } from '../target-transports/BaseTran
 import BaseWorker from '../databases/workers/BaseWorker';
 
 
-export default abstract class WebSocketTransport extends BaseTransport {
+export default class WebSocketTransport extends BaseTransport {
   protected readonly _connections: Map<string, WebSocket> = new Map();
 
   constructor(
@@ -17,8 +17,14 @@ export default abstract class WebSocketTransport extends BaseTransport {
 
   public initConnection (connection: WebSocket): string {
     const id = uuid();
+    connection['isAlive'] = true;
     this._connections.set(id, connection);
     return id;
+  }
+
+  public refreshConnection (connectionId: string): void {
+    const connection = this._connections.get(connectionId);
+    if (connection) connection['isAlive'] = true;
   }
 
   public deliverMessage (
@@ -33,8 +39,12 @@ export default abstract class WebSocketTransport extends BaseTransport {
   private _checkConnectivity (connectionId: string): void {
     if (this._connections.has(connectionId)) {
       const connection = this._connections.get(connectionId);
-      if (connection.readyState === WebSocket.CLOSED) {
+      if (connection['isAlive'] === false) {
+        connection.terminate();
         this._connections.delete(connectionId);
+      } else {
+        connection['isAlive'] = false;
+        connection.ping();
       }
     }
   }

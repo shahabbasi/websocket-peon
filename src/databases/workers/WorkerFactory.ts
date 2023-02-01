@@ -24,8 +24,11 @@ export default class WorkerFactory {
   }
 
   public static getWorker (
-    dbType: DatabaseType, config: DatabaseConfigs
+    dbType: string, config: DatabaseConfigs
   ): BaseWorker {
+    if (!(dbType in DatabaseType)) {
+      throw new Error('Invalid database type');
+    }
     if (dbType === DatabaseType.REDIS) {
       return this._getRedisWorker(config);
     }

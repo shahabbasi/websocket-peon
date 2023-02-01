@@ -8,8 +8,8 @@ export declare type ResponseType = {
 }
 
 export default abstract class BaseTransport {
-  private readonly _host: string;
-  private readonly _port: string;
+  protected readonly _host: string;
+  protected readonly _port: string;
 
   constructor (targetHost: string, targetPort: string) {
     this._host = targetHost;
