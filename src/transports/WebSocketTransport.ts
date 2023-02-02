@@ -35,6 +35,12 @@ export default class WebSocketTransport extends BaseTransport {
     this._refreshConnection(connectionId);
   }
 
+  public async handleUserMessage (
+    connectionId: string, message: Buffer
+  ): Promise<void> {
+    throw new Error('Not implemented!');
+  }
+
   private _refreshConnection (connectionId: string): void {
     const connection = this._connections.get(connectionId);
     if (connection) connection['isAlive'] = true;
