@@ -42,7 +42,7 @@ async function init(): Promise<void> {
     });
 
     ws.on('pong', function () {
-      transport.refreshConnection(connectionId);
+      transport.handlePong(connectionId);
     });
 
     ws.on('error', (err) => {

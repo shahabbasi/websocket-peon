@@ -22,11 +22,6 @@ export default class WebSocketTransport extends BaseTransport {
     return id;
   }
 
-  public refreshConnection (connectionId: string): void {
-    const connection = this._connections.get(connectionId);
-    if (connection) connection['isAlive'] = true;
-  }
-
   public deliverMessage (
     connectionId: string, message: MessageType
   ): Promise<ResponseType> {
@@ -34,6 +29,15 @@ export default class WebSocketTransport extends BaseTransport {
     if (conn && conn.readyState === conn.OPEN) {
       return this._targetTransport.sendRequest(message);
     }
+  }
+
+  public handlePong (connectionId: string): void {
+    this._refreshConnection(connectionId);
+  }
+
+  private _refreshConnection (connectionId: string): void {
+    const connection = this._connections.get(connectionId);
+    if (connection) connection['isAlive'] = true;
   }
 
   private _checkConnectivity (connectionId: string): void {
