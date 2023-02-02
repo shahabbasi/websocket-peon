@@ -22,7 +22,7 @@ export default class WebSocketTransport extends BaseTransport {
     return id;
   }
 
-  public deliverMessage (
+  public publishMessage (
     connectionId: string, message: MessageType
   ): Promise<ResponseType> {
     const conn = this._connections.get(connectionId);

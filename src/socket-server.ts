@@ -37,7 +37,7 @@ async function init(): Promise<void> {
   server.on('connection', function connection(ws: WebSocket) {
     const connectionId: string = transport.initConnection(ws);
 
-    ws.on('message', function message(data) {
+    ws.on('message', function message(data: Buffer) {
       // TODO: Process user message!
     });
 

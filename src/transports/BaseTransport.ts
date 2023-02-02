@@ -22,5 +22,5 @@ export default abstract class BaseTransport {
 
   public abstract initConnection (connection: unknown): string
 
-  public abstract deliverMessage (connectionId: string, message: MessageType): void
+  public abstract publishMessage (connectionId: string, message: MessageType): void
 }
