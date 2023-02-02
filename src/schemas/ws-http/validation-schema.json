@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "required": [
+    "path",
+    "method",
+    "headers"
+  ],
+  "properties": {
+    "path": {
+      "type": "string"
+    },
+    "method": {
+      "type": "string"
+    },
+    "headers": {
+      "type": "array",
+      "items": {
+        "type":"object",
+        "properties": {
+          "key": "string",
+          "value": "string"
+        }
+      }
+    },
+    "params": {
+      "type": "array",
+      "items": {
+        "type":"object",
+        "properties": {
+          "key": "string",
+          "value": "string"
+        }
+      }
+    },
+    "body": {}
+  }
+}

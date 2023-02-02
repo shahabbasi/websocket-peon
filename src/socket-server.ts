@@ -53,6 +53,10 @@ async function init(): Promise<void> {
       // TODO: Setup close handler!
     });
 
+    ws.on('ping', () => {
+      ws.pong();
+    });
+
     if (ws.readyState in [WebSocket.OPEN, WebSocket.CONNECTING]) {
       ws.send(JSON.stringify({ message: `Your connectionId is: ${connectionId}` }));
     }
