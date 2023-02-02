@@ -39,7 +39,6 @@ async function init(): Promise<void> {
 
     ws.on('message', function message(data) {
       // TODO: Process user message!
-      ws.send('HI!');
     });
 
     ws.on('pong', function () {
