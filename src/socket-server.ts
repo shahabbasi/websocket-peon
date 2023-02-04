@@ -1,11 +1,14 @@
 'use strict';
 import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
 import { WebSocketServer, WebSocket } from 'ws';
 import WebSocketTransport from './transports/WebSocketTransport';
 import WorkerFactory from './databases/workers/WorkerFactory';
 import BaseWorker from './databases/workers/BaseWorker';
 import BaseTargetTransport from './target-transports/BaseTransport';
 import HTTPTransport from './target-transports/HTTPTransport';
+import WebSocketHTTPCompiler from './message-compilers/WebSocketHTTPCompiler';
 
 
 async function init(): Promise<void> {
@@ -24,9 +27,19 @@ async function init(): Promise<void> {
     process.env.TARGET_PORT,
   );
 
+  const messageCompiler: WebSocketHTTPCompiler = new WebSocketHTTPCompiler(
+    fs.readFileSync(
+      path.normalize(
+        './src/schemas/ws-http/validation-schema.json'
+      ),
+      {encoding: 'utf-8'}
+    )
+  );
+
   const transport = new WebSocketTransport(
     worker,
     targetTransport,
+    messageCompiler,
   );
 
   const port = parseInt(process.env.PORT || '3001');
@@ -38,7 +51,7 @@ async function init(): Promise<void> {
     const connectionId: string = transport.initConnection(ws);
 
     ws.on('message', function message(data: Buffer) {
-      // TODO: Process user message!
+      transport.handleUserMessage(connectionId, data);
     });
 
     ws.on('pong', function () {

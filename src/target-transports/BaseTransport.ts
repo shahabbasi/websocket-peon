@@ -3,7 +3,7 @@ import { MessageType } from '../transports/BaseTransport';
 
 export declare type ResponseType = {
   status: number
-  message: string | null
+  headers: unknown | null
   data: unknown | null
 }
 

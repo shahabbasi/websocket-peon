@@ -1,4 +1,5 @@
 import { Validator, ValidatorResult } from 'jsonschema';
+import { MessageType } from '../transports/BaseTransport';
 
 
 export default class BaseCompiler {
@@ -15,5 +16,9 @@ export default class BaseCompiler {
   ): [boolean, ValidatorResult] {
     const validate = this._validator.validate(data, this._schema);
     return [validate.valid, validate];
+  }
+
+  public compileMessage (message: unknown): MessageType {
+    throw new Error('Not implemented!');
   }
 }

@@ -1,17 +1,20 @@
-import BaseTransport, { MessageType } from './BaseTransport';
+import BaseTransport from './BaseTransport';
 import uuid from '../utils/uuid';
 import { WebSocket } from 'ws';
-import BaseTargetTransport, { ResponseType } from '../target-transports/BaseTransport';
+import BaseTargetTransport from '../target-transports/BaseTransport';
 import BaseWorker from '../databases/workers/BaseWorker';
+import WebSocketHTTPCompiler from '../message-compilers/WebSocketHTTPCompiler';
 
 
 export default class WebSocketTransport extends BaseTransport {
   protected readonly _connections: Map<string, WebSocket> = new Map();
 
   constructor(
-    db: BaseWorker, targetTransport: BaseTargetTransport
+    db: BaseWorker,
+    targetTransport: BaseTargetTransport,
+    compiler: WebSocketHTTPCompiler,
   ) {
-    super(db, targetTransport);
+    super(db, targetTransport, compiler);
     this._setupConnectivityChecker();
   }
 
@@ -22,23 +25,26 @@ export default class WebSocketTransport extends BaseTransport {
     return id;
   }
 
-  public publishMessage (
-    connectionId: string, message: MessageType
-  ): Promise<ResponseType> {
-    const conn = this._connections.get(connectionId);
-    if (conn && conn.readyState === conn.OPEN) {
-      return this._targetTransport.sendRequest(message);
-    }
-  }
-
   public handlePong (connectionId: string): void {
     this._refreshConnection(connectionId);
   }
 
   public async handleUserMessage (
-    connectionId: string, message: Buffer
+    connectionId: string,
+    message: Buffer,
   ): Promise<void> {
-    throw new Error('Not implemented!');
+    try {
+      const msgData = this._messageCompiler.compileMessage(message);
+      const result = await this._targetTransport.sendRequest(msgData);
+      this._publishMessage(connectionId, JSON.stringify(result));
+    } catch (error) {
+      console.log(error);
+
+      this._publishMessage(connectionId, JSON.stringify({
+        status: 422,
+        message: 'Invalid message format!',
+      }));
+    }
   }
 
   private _refreshConnection (connectionId: string): void {
@@ -65,5 +71,14 @@ export default class WebSocketTransport extends BaseTransport {
         this._checkConnectivity(key);
       }
     }, 2 * 60 * 1000);
+  }
+
+  protected _publishMessage (
+    connectionId: string, message: string
+  ): void {
+    const conn = this._connections.get(connectionId);
+    if (conn && conn.readyState === conn.OPEN) {
+      conn.send(message);
+    }
   }
 }

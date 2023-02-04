@@ -4,12 +4,17 @@ import BaseTransport, { ResponseType } from './BaseTransport';
 
 
 export default class HTTPTransport extends BaseTransport {
-  public sendRequest (message: MessageType): Promise<ResponseType> {
-    return axios({
+  public async sendRequest (message: MessageType): Promise<ResponseType> {
+    const result = await axios({
       method: message.method,
       url: `${this._host}:${this._port}${message.path}`,
       headers: message.headers,
       data: message.body,
     });
+    return {
+      status: result.status,
+      headers: result.headers,
+      data: result.data,
+    };
   }
 }
