@@ -8,7 +8,7 @@ export declare type MessageType = {
   path: string
   headers: {[key: string]: string}
   params: {[key: string]: string}
-  body: {[key: string]: unknown}
+  body: unknown
 }
 
 export default abstract class BaseTransport {

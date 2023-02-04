@@ -4,7 +4,7 @@ import { MessageType } from '../transports/BaseTransport';
 export declare type ResponseType = {
   status: number
   headers: unknown | null
-  data: unknown | null
+  response: unknown | null
 }
 
 export default abstract class BaseTransport {

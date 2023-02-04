@@ -15,9 +15,14 @@
       "type": "array",
       "items": {
         "type":"object",
+        "required": ["key", "value"],
         "properties": {
-          "key": "string",
-          "value": "string"
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
         }
       }
     },
@@ -25,9 +30,14 @@
       "type": "array",
       "items": {
         "type":"object",
+        "required": ["key", "value"],
         "properties": {
-          "key": "string",
-          "value": "string"
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
         }
       }
     },

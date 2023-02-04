@@ -9,12 +9,16 @@ export default class HTTPTransport extends BaseTransport {
       method: message.method,
       url: `${this._host}:${this._port}${message.path}`,
       headers: message.headers,
+      params: message.params,
       data: message.body,
+      validateStatus(status) {
+        return true;
+      },
     });
     return {
       status: result.status,
       headers: result.headers,
-      data: result.data,
+      response: result.data,
     };
   }
 }
