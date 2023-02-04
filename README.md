@@ -13,13 +13,13 @@ PORT=3001 # The port that will be exposed
 
 
 # Target Backend
-TARGET_HOST=127.0.0.1 # Target API host
+TARGET_HOST=http://127.0.0.1 # Target API host
 
 TARGET_PORT=3000 # Target API port
 
 
 # Database
-DATABASE_TYPE=redis # Database type which is Redis by default [redis | postgres | mongodb | mysql]
+DATABASE_TYPE=redis # Database type which is Redis by default [redis]
 
 DB_URL=redis://:@0.0.0.0:6379 # Database connection url
 
