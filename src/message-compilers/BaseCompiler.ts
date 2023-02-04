@@ -2,6 +2,11 @@ import { Validator, ValidatorResult } from 'jsonschema';
 import { MessageType } from '../transports/BaseTransport';
 
 
+export declare type WSMessageType = {
+  messageType: 'request' | 'action',
+  data: MessageType | string
+}
+
 export default class BaseCompiler {
   protected readonly _schema: {[key: string]: unknown};
   protected readonly _validator: Validator;
@@ -18,7 +23,7 @@ export default class BaseCompiler {
     return [validate.valid, validate];
   }
 
-  public compileMessage (message: unknown): MessageType {
+  public compileMessage (message: unknown): WSMessageType {
     throw new Error('Not implemented!');
   }
 }

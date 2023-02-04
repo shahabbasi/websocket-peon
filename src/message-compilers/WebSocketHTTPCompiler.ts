@@ -1,5 +1,5 @@
 import { MessageType } from '../transports/BaseTransport';
-import BaseCompiler from './BaseCompiler';
+import BaseCompiler, { WSMessageType } from './BaseCompiler';
 
 
 export default class WebSocketHTTPCompiler extends BaseCompiler {
@@ -7,8 +7,14 @@ export default class WebSocketHTTPCompiler extends BaseCompiler {
     super(messageSchema);
   }
 
-  public compileMessage (message: Buffer): MessageType {
-    const msgData = JSON.parse(message.toString());
+  public compileMessage (message: Buffer): WSMessageType {
+    const data = JSON.parse(message.toString());
+    const msgType = data.messageType;
+    const msgData = data.data;
+
+    if (msgType === 'action') {
+      return data;
+    }
 
     if (this._validate(msgData)[0]) {
       const headers = {};
@@ -29,7 +35,10 @@ export default class WebSocketHTTPCompiler extends BaseCompiler {
         body: msgData.body,
       };
 
-      return msg;
+      return {
+        messageType: msgType,
+        data: msg,
+      };
     }
 
     throw new Error('Invalid message format');

@@ -1,7 +1,7 @@
-import BaseTransport from './BaseTransport';
+import BaseTransport, { MessageType } from './BaseTransport';
 import uuid from '../utils/uuid';
 import { WebSocket } from 'ws';
-import BaseTargetTransport from '../target-transports/BaseTransport';
+import BaseTargetTransport, { ResponseType } from '../target-transports/BaseTransport';
 import BaseWorker from '../databases/workers/BaseWorker';
 import WebSocketHTTPCompiler from '../message-compilers/WebSocketHTTPCompiler';
 
@@ -35,16 +35,49 @@ export default class WebSocketTransport extends BaseTransport {
   ): Promise<void> {
     try {
       const msgData = this._messageCompiler.compileMessage(message);
-      const result = await this._targetTransport.sendRequest(msgData);
-      this._publishMessage(connectionId, JSON.stringify(result));
+      if (msgData.messageType === 'request') {
+        if (typeof msgData.data !== 'string') {
+          const result = await this._sendToTarget(msgData.data);
+          this._publishMessage(connectionId, JSON.stringify(result));
+          return;
+        }
+      } else if (msgData.messageType === 'action') {
+        if (typeof msgData.data === 'string') {
+          this._registerUser(connectionId, msgData.data);
+          return;
+        }
+      }
+      this._publishMessage(connectionId, JSON.stringify({
+        status: 422,
+        message: 'Invalid message format!',
+      }));
     } catch (error) {
-      console.log(error);
-
       this._publishMessage(connectionId, JSON.stringify({
         status: 422,
         message: 'Invalid message format!',
       }));
     }
+  }
+
+  private async _sendToTarget (
+    msgData: MessageType,
+  ): Promise<ResponseType> {
+    const result = await this._targetTransport.sendRequest(msgData);
+    return result;
+  }
+
+  private async _registerUser (
+    connectionId: string,
+    msgData: string,
+  ): Promise<void> {
+    this._db.setUserConnection(msgData, connectionId);
+    this._publishMessage(
+      connectionId,
+      JSON.stringify({
+        status: 200,
+        message: 'You\'ve been registered!',
+      }),
+    );
   }
 
   private _refreshConnection (connectionId: string): void {
