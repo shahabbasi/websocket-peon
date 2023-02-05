@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: '',
-    script: 'dist/src/socket-server.js',
+    script: 'dist/socket-server.js',
     exec_mode: 'cluster',
     max_memory_restart: '400M',
     max_restarts: 250,

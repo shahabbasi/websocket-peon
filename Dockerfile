@@ -6,7 +6,7 @@ ADD package.json ./
 
 RUN yarn
 
-ADD src ./
+ADD src ./src
 ADD tsconfig.json ./
 
 RUN npm run build
@@ -18,5 +18,8 @@ WORKDIR /usr/app
 
 RUN yarn add pm2
 
-COPY --from=builder /usr/app/dist /usr/app/
+ADD ecosystem.config.js ./
 
+COPY --from=builder /usr/app /usr/app
+
+CMD ["npx", "pm2", "start", "ecosystem.config.js", "--no-daemon"]
