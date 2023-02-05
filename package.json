@@ -5,7 +5,8 @@
   "main": "src/socket-server.ts",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "server:dev": "cp -r ./src/schemas ./dist/ && npx nodemon --config sserver.nodemon.json"
+    "server:dev": "cp -r ./src/schemas ./dist/ && npx nodemon --config sserver.nodemon.json",
+    "build": "npx tsc && cp -r ./src/schemas ./dist/"
   },
   "repository": {
     "type": "git",
