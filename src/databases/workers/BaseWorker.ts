@@ -12,6 +12,10 @@ export default abstract class BaseWorker {
     identity: string
   ): Promise<string>
 
+  public abstract getUserConnections (
+    identities: Array<string>
+  ): Promise<Array<string>>
+
   public abstract setUserConnection (
     identity: string, connectionId: string
   ): Promise<string>

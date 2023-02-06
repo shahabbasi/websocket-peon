@@ -4,18 +4,29 @@ import { WebSocket } from 'ws';
 import BaseTargetTransport, { ResponseType } from '../target-transports/BaseTransport';
 import BaseWorker from '../databases/workers/BaseWorker';
 import WebSocketHTTPCompiler from '../message-compilers/WebSocketHTTPCompiler';
+import RedisBrokerWorker from '../brokers/RedisBrokerWorker';
 
+
+export declare type TargetMessageType = {
+  messageType: string
+  userIdentities: Array<string>
+  message: unknown
+}
 
 export default class WebSocketTransport extends BaseTransport {
   protected readonly _connections: Map<string, WebSocket> = new Map();
+  private readonly _broker: RedisBrokerWorker;
 
   constructor(
     db: BaseWorker,
     targetTransport: BaseTargetTransport,
     compiler: WebSocketHTTPCompiler,
+    broker: RedisBrokerWorker,
   ) {
     super(db, targetTransport, compiler);
     this._setupConnectivityChecker();
+    this._broker = broker;
+    this._broker.startListen(this._onMessage.bind(this));
   }
 
   public initConnection (connection: WebSocket): string {
@@ -56,6 +67,47 @@ export default class WebSocketTransport extends BaseTransport {
         status: 422,
         message: 'Invalid message format!',
       }));
+    }
+  }
+
+  public async sendMessageToUser (identity: string, message: string): Promise<void> {
+    const connectionId: string = await this._db.getUserConnection(identity);
+    this._publishMessage(connectionId, message);
+  }
+
+  private async _publishTargetMessage (msgData: TargetMessageType): Promise<void> {
+    const {
+      messageType,
+      userIdentities,
+      message,
+    }: TargetMessageType = msgData;
+
+    this._db.getUserConnections(userIdentities).then(async (connectionIds) => {
+      const publishes = [];
+      for (const id of connectionIds) {
+        publishes.push(
+          this._publishMessage(
+            id,
+            JSON.stringify(message),
+          )
+        );
+      }
+
+      await Promise.all(publishes);
+    });
+  }
+
+  private _onMessage (channel: string, message: string): void {
+    try {
+      const msgData: TargetMessageType = JSON.parse(message);
+      if (
+        msgData.messageType &&
+        msgData.message
+      ) {
+        this._publishTargetMessage(msgData);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

@@ -9,6 +9,7 @@ import BaseWorker from './databases/workers/BaseWorker';
 import BaseTargetTransport from './target-transports/BaseTransport';
 import HTTPTransport from './target-transports/HTTPTransport';
 import WebSocketHTTPCompiler from './message-compilers/WebSocketHTTPCompiler';
+import RedisBrokerWorker from './brokers/RedisBrokerWorker';
 
 
 async function init(): Promise<void> {
@@ -36,10 +37,16 @@ async function init(): Promise<void> {
     )
   );
 
+  const broker = new RedisBrokerWorker(
+    process.env.DB_URL,
+    process.env.DB_PREFIX,
+  );
+
   const transport = new WebSocketTransport(
     worker,
     targetTransport,
     messageCompiler,
+    broker,
   );
 
   const port = parseInt(process.env.PORT || '3001');
